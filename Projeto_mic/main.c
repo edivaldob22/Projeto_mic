@@ -6,6 +6,7 @@
  */ 
 
 #include <xc.h>
+#include "teclado.h"
 
 int main(void)
 {
