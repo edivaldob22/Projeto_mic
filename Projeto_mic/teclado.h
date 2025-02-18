@@ -11,5 +11,8 @@
 
 //declarar a(s) funções do teclado
 
+void setupKeypad();
+char scanKeypad();
+void setupInterrupts();
 
 #endif /* TECLADO_H_ */
