@@ -2,17 +2,16 @@
  * teclado.h
  *
  * Created: 04/02/2025 11:23:35
- *  Author: Aluno
+ *  Author: Guilherme
  */ 
 
 
-#ifndef TECLADO_H_
-#define TECLADO_H_
+#ifndef TECLADO_H
+#define TECLADO_H
 
-//declarar a(s) funções do teclado
-
+// Declaração das funções
 void setupKeypad();
-char scanKeypad();
 void setupInterrupts();
+char scanKeypad();
 
-#endif /* TECLADO_H_ */
+#endif
