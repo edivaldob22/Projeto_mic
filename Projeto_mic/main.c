@@ -6,8 +6,12 @@
  */ 
 
 #include <xc.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
 #include "teclado.h"
 #include "disp.h"
+
+#define F_CPU 8000000
 
 int main(void)
 {
@@ -16,11 +20,14 @@ int main(void)
 	DDRD = 0b11111111; //PD0 a 5 disp
 	//PB0 e 1 e PD6 e 7 saida teclado.
 	
+	PORTB = 0x00;
 	PORTC = 0x00;
 	PORTD = 0x00;
 	
+	disp_inicial();
+	
     while(1)
     {
-        //
+		//
     }
 }
