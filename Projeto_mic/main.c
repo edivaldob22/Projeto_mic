@@ -2,15 +2,21 @@
  * main.c
  *
  * Created: 2/4/2025 9:19:04 AM
- *  Author: Edivaldo e Guilherme
+ *  Author: Guilherme
  */ 
 
+<<<<<<< HEAD
 #include <xc.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+=======
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+>>>>>>> 229071333787caca1ed473632468f1d336671f1f
 #include "teclado.h"
-#include "disp.h"
 
+<<<<<<< HEAD
 #define F_CPU 8000000
 
 int main(void)
@@ -30,4 +36,35 @@ int main(void)
     {
 		//
     }
+=======
+#define F_CPU 8000000  // Frequência do microcontrolador
+
+volatile char lastKeyPressed = '\0';
+char armazenaKey[6] = "";  // Armazena até 6 teclas
+int keyIndex = 0;
+
+int main() {
+	while (1) {
+		if (lastKeyPressed != '\0') {
+			// Armazena a tecla pressionada
+			if (keyIndex < 6) {
+				armazenaKey[keyIndex++] = lastKeyPressed;
+				armazenaKey[keyIndex] = '\0'; // Mantém a string terminada corretamente
+			}
+			lastKeyPressed = '\0';  // Limpa a variável após uso
+		}
+		if (armazenaKey[0] == '1') {
+		PORTB |= 0b00000010;
+		_delay_ms(1000);
+		PORTB &= ~0b00000010;
+		}
+	}
+
+	return 0;
+}
+
+// Rotina de interrupção para detectar pressionamento de teclas
+ISR(PCINT0_vect) {
+	lastKeyPressed = scanKeypad();
+>>>>>>> 229071333787caca1ed473632468f1d336671f1f
 }
