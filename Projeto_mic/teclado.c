@@ -2,22 +2,22 @@
  * teclado.c
  *
  * Created: 04/02/2025 11:15:06
- *  Author: Aluno
+ *  Author: Guilherme
  */ 
 #include "teclado.h"
-#include <avr/interrupt.h>
+#include <avr/io.h>
 #include <util/delay.h>
-#include <xc.h>
 
-#define F_CPU 8000000  // Frequï¿½ncia do microcontrolador
+#define F_CPU 8000000  // Frequência do microcontrolador
 
-// Definiï¿½ï¿½o dos pinos das linhas (saï¿½da)
+
+// Definição dos pinos das linhas (saída)
 #define ROW1 PB1
 #define ROW2 PB0
 #define ROW3 PD7
 #define ROW4 PD6
 
-// Definiï¿½ï¿½o dos pinos das colunas (entrada)
+// Definição dos pinos das colunas (entrada)
 #define COL1 PB2
 #define COL2 PB3
 #define COL3 PB4
@@ -31,34 +31,30 @@ char keys[4][4] = {
 	{'0', '1', '2', '3'}
 };
 
-// Variï¿½vel para armazenar a tecla pressionada
-volatile char lastKeyPressed = '\0';
-char armazenaKey[6] = ""; // Armazena atï¿½ 6 teclas
-int keyIndex = 0;
-
-// Configuraï¿½ï¿½o inicial do teclado
 void setupKeypad() {
 	// Configura as colunas como entrada (com pull-up)
+	DDRB &= ~((1 << COL1) | (1 << COL2) | (1 << COL3) | (1 << COL4));
 	PORTB |= (1 << COL1) | (1 << COL2) | (1 << COL3) | (1 << COL4);
+
+	// Configura as linhas como saída
+	DDRB |= (1 << ROW1) | (1 << ROW2);
+	DDRD |= (1 << ROW3) | (1 << ROW4);
 
 	// Desativa todas as linhas (estado alto)
 	PORTB |= (1 << ROW1) | (1 << ROW2);
 	PORTD |= (1 << ROW3) | (1 << ROW4);
-	PCICR |= (1 << PCIE0);   // Habilita interrupï¿½ï¿½es de mudanï¿½a de estado no PCINT
-	PCMSK0 |= (1 << PCINT2) | (1 << PCINT3) | (1 << PCINT4) | (1 << PCINT5); // Habilita interrupï¿½ï¿½o nas colunas do teclado
-	sei(); // Habilita interrupï¿½ï¿½es globais
 }
 
-// Rotina de interrupï¿½ï¿½o para detectar pressionamento de teclas
-ISR(PCINT0_vect) {
-	lastKeyPressed = scanKeypad();
+void setupInterrupts() {
+	PCICR |= (1 << PCIE0);   // Habilita interrupções de mudança de estado no PCINT
+	PCMSK0 |= (1 << PCINT2) | (1 << PCINT3) | (1 << PCINT4) | (1 << PCINT5); // Habilita interrupção nas colunas do teclado
+	sei(); // Habilita interrupções globais
 }
 
-// Funï¿½ï¿½o para escanear o teclado matricial
 char scanKeypad() {
-	char key = '\0'; // Nenhuma tecla pressionada por padrï¿½o
+	char key = '\0'; // Nenhuma tecla pressionada por padrão
 
-	// Percorre cada linha e verifica qual coluna estï¿½ pressionada
+	// Percorre cada linha e verifica qual coluna está pressionada
 	for (int i = 0; i < 4; i++) {
 		// Ativa uma linha por vez
 		if (i == 0) { PORTB &= ~(1 << ROW1); PORTB |= (1 << ROW2); PORTD |= (1 << ROW3) | (1 << ROW4); }
@@ -74,7 +70,7 @@ char scanKeypad() {
 		if (!(PINB & (1 << COL3))) key = keys[i][2];
 		if (!(PINB & (1 << COL4))) key = keys[i][3];
 
-		// Desativa todas as linhas antes de passar para a prï¿½xima verificaï¿½ï¿½o
+		// Desativa todas as linhas antes de passar para a próxima verificação
 		PORTB |= (1 << ROW1) | (1 << ROW2);
 		PORTD |= (1 << ROW3) | (1 << ROW4);
 
