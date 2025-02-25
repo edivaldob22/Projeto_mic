@@ -13,5 +13,4 @@
 void setupKeypad();
 void setupInterrupts();
 char scanKeypad();
-
 #endif
