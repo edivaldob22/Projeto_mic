@@ -13,15 +13,18 @@
 #include <string.h>
 #include "teclado.h"
 #include "disp.h"
+#include "buzzer.h"
 
 #define F_CPU 8000000
 
 #define tam_Senha 6
 
 char senha_correta[7] = "123456";
-int senhaCorretaFlag = 0;
-int ax = 0;
-int f_key = 0;
+int f_senhaCorreta = 0;
+int c_erro = 0;
+uint8_t f_ax = 1;
+uint8_t f_buzzer = 1;
+uint8_t f_key = 0;
 char armazenaKey[7];  // Armazena até 6 teclas
 
 int main(void)
@@ -39,50 +42,62 @@ int main(void)
 	setupInterrupts();
 	
 	disp_inicial();
-	
+	disp_clear();
 	while (1) {
 		char mensagem[16] = "Digite a Senha";
 		
-		if (ax == 0) {
-			ax = 1;
+		if (f_ax && (c_erro < 3)) {
+			f_ax = 0;
 			disp_set(1);
 			disp_w(mensagem, 14);      
 			int i = 0;
 			while (i < tam_Senha) {
 				char tecla = scanKeypad();
-
+				_delay_ms(1000);
 				if (tecla != '\0') {
 					armazenaKey[i++] = tecla; // Armazena a tecla no vetor
 					armazenaKey[i] = '\0';    // Finaliza a string
 
 					disp_set(2);              // Define a segunda linha do display
 					disp_w(armazenaKey, i);   // Exibe a senha digitada
-					_delay_ms(800);
+					_delay_ms(2000);
 				}
 			
 			}
 			if(i == tam_Senha) f_key = 1;
 		}
-		
-		if(f_key == 1){
+		if(c_erro >= 3){
+			disp_clear();
+			disp_set(1);
+			strcpy(mensagem, "Cofre bloqueado");
+			disp_w(mensagem,15);
+			_delay_ms(60000);
+			disp_clear();
+			c_erro = 0;
+		}
+		if(f_key){
 			for (int i = 0; i < tam_Senha; i++) {
-				if ((armazenaKey[i]) != (senha_correta[i])) senhaCorretaFlag++;
+				if ((armazenaKey[i]) != (senha_correta[i])) f_senhaCorreta++;
 			}
 
-			if(senhaCorretaFlag > 0) {
-				//beepLongo();
+			if(f_senhaCorreta > 0) {
+				beepLongo();
 				disp_clear();
 				disp_set(1);
 				strcpy(mensagem, "Senha incorreta");
 				disp_w(mensagem,15);
-				_delay_ms(2000);
+				_delay_ms(3000);
 				disp_clear();
-				ax = 0;
+				f_ax = 1;
 				f_key = 0;
-				senhaCorretaFlag = 0;
+				f_senhaCorreta = 0;
+				c_erro++;
 			}
 			else {
-				//beepCorreto();
+				if(f_buzzer) {
+					f_buzzer = 0;
+					beepCorreto();
+				}
 				disp_clear();
 				disp_set(1);
 				strcpy(mensagem, "Senha correta");
@@ -100,4 +115,5 @@ int main(void)
 ISR(PCINT0_vect) {
 	
 	PORTC ^= 0b00000001;
+	beepCurto();
 }

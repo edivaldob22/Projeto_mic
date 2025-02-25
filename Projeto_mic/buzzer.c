@@ -6,32 +6,34 @@
  */ 
 
 #include "buzzer.h"
+#include <avr/io.h>
+#include <util/delay.h>
 
-// Configura o pino do buzzer como saída
-void setupBuzzer() {
-	DDRC |= (1 << BUZZER); // Configura PC1 como saída
-}
+#define F_CPU 8000000
+
+// Definição do pino do buzzer (PC1)
+#define BUZZER 0b00000010
 
 // Bip curto (tecla pressionada)
 void beepCurto() {
-	PORTC |= (1 << BUZZER);
+	PORTC |= (BUZZER);
 	_delay_ms(50);
-	PORTC &= ~(1 << BUZZER);
+	PORTC &= ~(BUZZER);
 }
 
 // Bip longo (senha incorreta)
 void beepLongo() {
-	PORTC |= (1 << BUZZER);
-	_delay_ms(500);
-	PORTC &= ~(1 << BUZZER);
+	PORTC |= (BUZZER);
+	_delay_ms(1000);
+	PORTC &= ~(BUZZER);
 }
 
 // Três bipes curtos (senha correta)
 void beepCorreto() {
 	for (int i = 0; i < 3; i++) {
-		PORTC |= (1 << BUZZER);
+		PORTC |= (BUZZER);
 		_delay_ms(100);
-		PORTC &= ~(1 << BUZZER);
+		PORTC &= ~(BUZZER);
 		_delay_ms(100);
 	}
 }

@@ -9,16 +9,9 @@
 #ifndef BUZZER_H
 #define BUZZER_H
 
-#include <avr/io.h>
-#include <util/delay.h>
-
-// Definição do pino do buzzer
-#define BUZZER PC1
-
 // Protótipos das funções
-void setupBuzzer();
-void beepShort();
-void beepLong();
-void beepSuccess();
+void beepCurto();
+void beepLongo();
+void beepCorreto();
 
 #endif
