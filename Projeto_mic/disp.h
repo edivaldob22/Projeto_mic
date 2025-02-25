@@ -12,7 +12,6 @@
 //declarar a(s) funções do display
 void disp_inicial();
 void disp_clear();
-void disp_set(int linha, int col);
-void disp_w(char msg[16]);
-
+void disp_set(int linha);
+void disp_w(char msg[16], int quant);
 #endif /* DISP_H_ */
