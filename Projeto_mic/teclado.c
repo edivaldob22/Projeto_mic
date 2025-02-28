@@ -4,13 +4,14 @@
  * Created: 04/02/2025 11:15:06
  *  Author: Guilherme
  */
+
+#define F_CPU 16000000  // Frequência do microcontrolador
+
 #include <xc.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "teclado.h"
-
-#define F_CPU 8000000  // Frequência do microcontrolador
 
 // Definição dos pinos das linhas (saída)
 #define ROW1 0b00000010 //PB1

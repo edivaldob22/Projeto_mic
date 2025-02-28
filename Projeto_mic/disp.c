@@ -4,6 +4,7 @@
  * Created: 11/02/2025 11:15:06
  *  Author: Edivaldo
  */
+#define F_CPU 16000000
 
 #include <xc.h>
 #include <avr/io.h>
@@ -11,8 +12,6 @@
 #include <util/delay.h>
 #include <stdio.h>
 #include "disp.h"
-
-#define F_CPU 8000000
 
 void disp_inicial()
 {
@@ -231,10 +230,10 @@ void disp_set(int linha)
 	_delay_ms(2);
 	
 	if(linha == 1){
-		pChar = 0b00000110;
+		pChar = 0b00000111;
 	}else if(linha == 2){
 		pChar = 0b11000000;
-	}else pChar = 0b00000110;
+	}else pChar = 0b00000111;
 	
 	//modo set
 	db0 = (pChar & 0b00000001) >> 0;

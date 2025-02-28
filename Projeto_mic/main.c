@@ -4,6 +4,7 @@
  * Created: 2/4/2025 9:19:04 AM
  *  Author: Edivaldo e Guilherme
  */
+#define F_CPU 16000000
 
 #include <xc.h>
 #include <avr/io.h>
@@ -14,8 +15,6 @@
 #include "teclado.h"
 #include "disp.h"
 #include "buzzer.h"
-
-#define F_CPU 8000000
 
 #define tam_Senha 6
 
@@ -48,19 +47,18 @@ int main(void)
 		
 		if (f_ax && (c_erro < 3)) {
 			f_ax = 0;
+			disp_clear();
 			disp_set(1);
 			disp_w(mensagem, 14);      
 			int i = 0;
 			while (i < tam_Senha) {
 				char tecla = scanKeypad();
-				_delay_ms(1000);
 				if (tecla != '\0') {
 					armazenaKey[i++] = tecla; // Armazena a tecla no vetor
 					armazenaKey[i] = '\0';    // Finaliza a string
-
+					_delay_ms(50);
 					disp_set(2);              // Define a segunda linha do display
 					disp_w(armazenaKey, i);   // Exibe a senha digitada
-					_delay_ms(2000);
 				}
 			
 			}
@@ -71,7 +69,7 @@ int main(void)
 			disp_set(1);
 			strcpy(mensagem, "Cofre bloqueado");
 			disp_w(mensagem,15);
-			_delay_ms(60000);
+			_delay_ms(10000);
 			disp_clear();
 			c_erro = 0;
 		}
@@ -86,7 +84,22 @@ int main(void)
 				disp_set(1);
 				strcpy(mensagem, "Senha incorreta");
 				disp_w(mensagem,15);
-				_delay_ms(3000);
+				if(c_erro == 0){
+					disp_set(2);
+					strcpy(mensagem, "2 tentativas");
+					disp_w(mensagem,12);
+				}
+				if(c_erro == 1){
+					disp_set(2);
+					strcpy(mensagem, "1 tentativa");
+					disp_w(mensagem,11);
+				}
+				if(c_erro == 2){
+					disp_set(2);
+					strcpy(mensagem, "0 tentativa");
+					disp_w(mensagem,11);
+				}
+				_delay_ms(2000);
 				disp_clear();
 				f_ax = 1;
 				f_key = 0;

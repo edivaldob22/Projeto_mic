@@ -5,11 +5,11 @@
  *  Author: Guilherme
  */ 
 
+#define F_CPU 16000000
+
 #include "buzzer.h"
 #include <avr/io.h>
 #include <util/delay.h>
-
-#define F_CPU 8000000
 
 // Definição do pino do buzzer (PC1)
 #define BUZZER 0b00000010
